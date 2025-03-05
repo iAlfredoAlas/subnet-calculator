@@ -1,10 +1,16 @@
 package biz.utilsdev.subnetcalculator.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SubnetResponse {
 
     private String ipBase;
@@ -12,7 +18,10 @@ public class SubnetResponse {
     private String wildcardMask;
     private List<SubnetInfo> subnets;
 
-    @Data
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class SubnetInfo {
         private String networkAddress;
         private String subnetMask;
