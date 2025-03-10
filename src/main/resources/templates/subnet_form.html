@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Subneteo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="container mt-4">
+
+<h2 class="text-center">Calculadora de Subneteo</h2>
+
+<!-- Formulario -->
+<form id="subnetForm" class="mt-4">
+    <div class="mb-3">
+        <label for="ipBase" class="form-label">IP Base</label>
+        <input type="text" id="ipBase" class="form-control" required>
+        <div class="invalid-feedback">Formato inválido (Ejemplo: 192.168.1.1).</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="cidr" class="form-label">CIDR</label>
+        <input type="number" id="cidr" class="form-control" min="8" max="30" required>
+        <div class="invalid-feedback">El CIDR debe estar entre 8 y 30.</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="numSubnets" class="form-label">Número de Subredes</label>
+        <input type="number" id="numSubnets" class="form-control" min="1" required>
+        <div class="invalid-feedback">Debe ser un número mayor a 0.</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="hostRequirements" class="form-label">Hosts por Subred (separados por comas)</label>
+        <input type="text" id="hostRequirements" class="form-control" required>
+        <div class="invalid-feedback">Cada número debe ser mayor a 0.</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Calcular Subredes</button>
+</form>
+
+<!-- Tabla de resultados -->
+<div class="mt-4">
+    <h3>Resultados</h3>
+    <table class="table table-striped" id="resultsTable">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>IP de Red</th>
+            <th>Máscara</th>
+            <th>Gateway</th>
+            <th>Primera IP</th>
+            <th>Última IP</th>
+            <th>Broadcast</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <button id="copyJson" class="btn btn-success mt-2">Copiar JSON</button>
+    <button id="copyMarkdown" class="btn btn-secondary mt-2">Copiar Markdown</button>
+</div>
+
+<script>
+    document.getElementById("subnetForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        // Obtener valores del formulario
+        const ipBase = document.getElementById("ipBase").value;
+        const cidr = document.getElementById("cidr").value;
+        const numSubnets = document.getElementById("numSubnets").value;
+        const hostRequirements = document.getElementById("hostRequirements").value.split(",").map(h => parseInt(h.trim()));
+
+        // Validaciones visuales
+        let isValid = true;
+        const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+
+        if (!ipPattern.test(ipBase)) {
+            document.getElementById("ipBase").classList.add("is-invalid");
+            isValid = false;
+        } else {
+            document.getElementById("ipBase").classList.remove("is-invalid");
+        }
+
+        if (cidr < 8 || cidr > 30) {
+            document.getElementById("cidr").classList.add("is-invalid");
+            isValid = false;
+        } else {
+            document.getElementById("cidr").classList.remove("is-invalid");
+        }
+
+        if (numSubnets < 1) {
+            document.getElementById("numSubnets").classList.add("is-invalid");
+            isValid = false;
+        } else {
+            document.getElementById("numSubnets").classList.remove("is-invalid");
+        }
+
+        if (hostRequirements.some(h => h < 1 || isNaN(h))) {
+            document.getElementById("hostRequirements").classList.add("is-invalid");
+            isValid = false;
+        } else {
+            document.getElementById("hostRequirements").classList.remove("is-invalid");
+        }
+
+        if (!isValid) return;
+
+        // Enviar petición al backend
+        axios.post("/api/subnet/calculate", {
+            ipBase: ipBase,
+            cidr: parseInt(cidr),
+            numSubnets: parseInt(numSubnets),
+            hostRequirements: hostRequirements
+        })
+            .then(response => {
+                const tbody = document.querySelector("#resultsTable tbody");
+                tbody.innerHTML = "";
+                response.data.subnets.forEach(subnet => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${subnet.name}</td>
+                            <td>${subnet.networkAddress}</td>
+                            <td>${subnet.subnetMask}</td>
+                            <td>${subnet.gateway}</td>
+                            <td>${subnet.firstUsableIp}</td>
+                            <td>${subnet.lastUsableIp}</td>
+                            <td>${subnet.broadcast}</td>
+                        </tr>
+                    `;
+                });
+            })
+            .catch(error => {
+                alert("Error al calcular subredes.");
+            });
+    });
+</script>
+
+</body>
+</html>
