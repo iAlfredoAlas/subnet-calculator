@@ -80,24 +80,26 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 20px; /* Espaciado entre los íconos */
     padding: 20px;
     margin-top: 30px;
 }
 
-.github-link {
+.social-link {
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
 }
 
-.github-icon {
+.social-icon {
     width: 40px;
     height: 40px;
-    fill: #EEEEEE; /* Color del icono */
-    transition: fill 0.3s ease-in-out;
+    fill: #EEEEEE; /* Color inicial de los íconos */
+    transition: fill 0.3s ease-in-out, transform 0.2s ease-in-out;
 }
 
-.github-icon:hover {
-    fill: #76ABAE; /* Color cuando el mouse pasa por encima */
+.social-icon:hover {
+    fill: #76ABAE; /* Cambio de color al pasar el mouse */
+    transform: scale(1.1); /* Pequeño zoom al pasar el mouse */
 }
