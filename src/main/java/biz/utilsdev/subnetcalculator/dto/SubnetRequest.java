@@ -1,6 +1,5 @@
 package biz.utilsdev.subnetcalculator.dto;
 
-
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +15,7 @@ import java.util.List;
 public class SubnetRequest {
 
     @NotNull(message = "La IP base no puede ser nula.")
-    @Pattern(regexp = "^(\\d{1,3}\\.){3}\\d{1,3}$", message = "Formato de IP inválido. Debe tener cuatro octetos (ejemplo: 192.168.1.1).")
+    @Pattern(regexp = "^(\\d{1,3}\\.){3}\\d{1,3}$", message = "Formato de IP inválido. Ejemplo: 192.168.1.1")
     private String ipBase;
 
     @Min(value = 8, message = "El CIDR debe ser al menos /8.")
@@ -29,4 +28,8 @@ public class SubnetRequest {
     @NotEmpty(message = "Debe especificar la cantidad de hosts por cada subred.")
     private List<@Min(value = 1, message = "Cada subred debe tener al menos 1 host.") Integer> hostRequirements;
 
+    @AssertTrue(message = "El número de subredes debe coincidir con el tamaño de 'hostRequirements'.")
+    public boolean isValidSubnetSize() {
+        return hostRequirements != null && hostRequirements.size() == numSubnets;
+    }
 }
