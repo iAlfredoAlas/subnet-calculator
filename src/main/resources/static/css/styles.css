@@ -1,0 +1,103 @@
+/* Paleta de colores */
+:root {
+    --bg-dark: #222831;
+    --bg-light: #31363F;
+    --primary-color: #76ABAE;
+    --text-color: #EEEEEE;
+}
+
+/* Estilo general */
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-color);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    background-color: var(--bg-light);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 100%;
+}
+
+h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.form-label {
+    color: var(--text-color);
+}
+
+.form-control {
+    background-color: #1E1E1E;
+    color: var(--text-color);
+    border: 1px solid var(--primary-color);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px var(--primary-color);
+}
+
+.btn-primary, .btn-success, .btn-secondary {
+    background-color: var(--primary-color);
+    border: none;
+}
+
+.btn-primary:hover, .btn-success:hover, .btn-secondary:hover {
+    background-color: #5c8f92;
+}
+
+table {
+    background-color: var(--bg-dark);
+    color: var(--text-color);
+}
+
+th {
+    background-color: var(--primary-color);
+    color: #222831;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #2C323B;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: var(--bg-light);
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.github-icon {
+    width: 40px;
+    height: 40px;
+    fill: #EEEEEE; /* Color del icono */
+    transition: fill 0.3s ease-in-out;
+}
+
+.github-icon:hover {
+    fill: #76ABAE; /* Color cuando el mouse pasa por encima */
+}
