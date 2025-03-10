@@ -23,6 +23,7 @@ public class SubnetResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SubnetInfo {
+        private String name;
         private String networkAddress;
         private String subnetMask;
         private String gateway;
@@ -30,5 +31,4 @@ public class SubnetResponse {
         private String lastUsableIp;
         private String broadcast;
     }
-
 }
