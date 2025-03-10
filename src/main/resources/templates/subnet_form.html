@@ -60,7 +60,7 @@
         </tbody>
     </table>
     <button id="copyJson" class="btn btn-success mt-2">Copiar JSON</button>
-    <button id="copyMarkdown" class="btn btn-secondary mt-2">Copiar Markdown</button>
+    <button id="copyTable" class="btn btn-secondary mt-2">Copiar Tabla</button>
 </div>
 
 <script>
@@ -171,6 +171,25 @@
         navigator.clipboard.writeText(JSON.stringify(jsonData, null, 2))
             .then(() => alert("JSON copiado al portapapeles."))
             .catch(err => alert("Error al copiar JSON: " + err));
+    });
+    document.getElementById("copyTable").addEventListener("click", function() {
+        const tableBody = document.querySelector("#resultsTable tbody");
+        if (tableBody.children.length === 0) {
+            alert("No hay datos para copiar.");
+            return;
+        }
+
+        // Construir la tabla en texto con separadores de tabulación
+        let textTable = "Nombre\tIP de Red\tMáscara\tGateway\tPrimera IP\tÚltima IP\tBroadcast\n";
+        tableBody.querySelectorAll("tr").forEach(row => {
+            const cells = row.querySelectorAll("td");
+            textTable += `${cells[0].innerText}\t${cells[1].innerText}\t${cells[2].innerText}\t${cells[3].innerText}\t${cells[4].innerText}\t${cells[5].innerText}\t${cells[6].innerText}\n`;
+        });
+
+        // Copiar al portapapeles
+        navigator.clipboard.writeText(textTable)
+            .then(() => alert("Tabla copiada al portapapeles."))
+            .catch(err => alert("Error al copiar la tabla: " + err));
     });
 </script>
 
