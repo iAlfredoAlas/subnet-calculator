@@ -2,13 +2,9 @@
 ---
 
 ### **📌 Archivo `README.md`**
-📂 **Ubicación:** `README.md`
 
 
 # Subnet Calculator 🖧
-
-[![GitHub](https://img.shields.io/badge/GitHub-Profile-black?style=for-the-badge&logo=github)](https://github.com/iAlfredoAlas)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/alfredoalas/)
 
 [![GitHub](https://img.shields.io/badge/GitHub-Profile-black?style=social&logo=github)](https://github.com/iAlfredoAlas)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?style=social&logo=linkedin)](https://www.linkedin.com/in/alfredoalas/)
