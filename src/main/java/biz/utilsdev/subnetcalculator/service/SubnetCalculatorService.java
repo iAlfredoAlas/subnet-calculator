@@ -5,7 +5,6 @@ import biz.utilsdev.subnetcalculator.dto.SubnetResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -17,28 +16,31 @@ public class SubnetCalculatorService {
         response.setSubnetMask(getSubnetMask(request.getCidr()));
         response.setWildcardMask(getWildcardMask(request.getCidr()));
 
-        List<Integer> sortedHosts = new ArrayList<>(request.getHostRequirements());
-        sortedHosts.sort(Collections.reverseOrder());  // Ordenar de mayor a menor
-
         List<SubnetResponse.SubnetInfo> subnets = new ArrayList<>();
 
+        // Convertir la IP base a entero
         String[] ipParts = request.getIpBase().split("\\.");
         int baseIp = (Integer.parseInt(ipParts[0]) << 24) |
                 (Integer.parseInt(ipParts[1]) << 16) |
                 (Integer.parseInt(ipParts[2]) << 8) |
                 Integer.parseInt(ipParts[3]);
 
-        int currentIp = baseIp;  // Dirección base actual
+        // Calcular el tamaño del bloque basado en el CIDR
+        int blockSize = (int) Math.pow(2, (32 - request.getCidr()));
 
-        for (int requiredHosts : sortedHosts) {
-            int subnetSize = getNextPowerOfTwo(requiredHosts + 2); // +2 por red y broadcast
-            int cidr = 32 - Integer.numberOfTrailingZeros(subnetSize);
+        // Validar que haya espacio suficiente
+        if (blockSize < request.getNumSubnets()) {
+            throw new IllegalArgumentException("No hay suficiente espacio en la subred base para acomodar todas las subredes.");
+        }
 
-            int broadcastAddress = currentIp + subnetSize - 1;
+        int currentIp = baseIp;
+        for (int i = 0; i < request.getNumSubnets(); i++) {
+            int broadcastAddress = currentIp + blockSize - 1;
 
             SubnetResponse.SubnetInfo subnetInfo = new SubnetResponse.SubnetInfo();
+            subnetInfo.setName("Red " + (i + 1));
             subnetInfo.setNetworkAddress(intToIp(currentIp));
-            subnetInfo.setSubnetMask(getSubnetMask(cidr));
+            subnetInfo.setSubnetMask(getSubnetMask(request.getCidr()));
             subnetInfo.setGateway(intToIp(currentIp + 1));
             subnetInfo.setFirstUsableIp(intToIp(currentIp + 2));
             subnetInfo.setLastUsableIp(intToIp(broadcastAddress - 1));
@@ -46,7 +48,7 @@ public class SubnetCalculatorService {
 
             subnets.add(subnetInfo);
 
-            currentIp = broadcastAddress + 1; // La siguiente subred empieza justo después
+            currentIp += blockSize; // Avanzar a la siguiente subred
         }
 
         response.setSubnets(subnets);
@@ -71,14 +73,6 @@ public class SubnetCalculatorService {
                 wildcard & 0xff);
     }
 
-    private int getNextPowerOfTwo(int n) {
-        int power = 1;
-        while (power < n) {
-            power *= 2;
-        }
-        return power;
-    }
-
     private String intToIp(int ip) {
         return String.format("%d.%d.%d.%d",
                 (ip >> 24) & 0xff,
@@ -86,5 +80,4 @@ public class SubnetCalculatorService {
                 (ip >> 8) & 0xff,
                 ip & 0xff);
     }
-
 }
