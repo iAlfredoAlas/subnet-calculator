@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   subnet-app:
-    image: subnet-calculator
+    image: subnet-calculator:V.0.0.1  # Agregar la etiqueta aquí
     build: .
     ports:
       - "8090:8090"
