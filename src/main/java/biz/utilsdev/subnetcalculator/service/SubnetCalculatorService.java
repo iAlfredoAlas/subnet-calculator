@@ -25,22 +25,18 @@ public class SubnetCalculatorService {
                 (Integer.parseInt(ipParts[2]) << 8) |
                 Integer.parseInt(ipParts[3]);
 
-        // Calcular el tamaño del bloque basado en el CIDR
-        int blockSize = (int) Math.pow(2, (32 - request.getCidr()));
-
-        // Validar que haya espacio suficiente
-        if (blockSize < request.getNumSubnets()) {
-            throw new IllegalArgumentException("No hay suficiente espacio en la subred base para acomodar todas las subredes.");
-        }
-
         int currentIp = baseIp;
         for (int i = 0; i < request.getNumSubnets(); i++) {
-            int broadcastAddress = currentIp + blockSize - 1;
+            int requiredHosts = request.getHostRequirements().get(i);
+            int subnetBits = 32 - Integer.numberOfLeadingZeros(requiredHosts + 2); // +2 para red y broadcast
+            int subnetSize = (int) Math.pow(2, subnetBits);
+
+            int broadcastAddress = currentIp + subnetSize - 1;
 
             SubnetResponse.SubnetInfo subnetInfo = new SubnetResponse.SubnetInfo();
             subnetInfo.setName("Red " + (i + 1));
             subnetInfo.setNetworkAddress(intToIp(currentIp));
-            subnetInfo.setSubnetMask(getSubnetMask(request.getCidr()));
+            subnetInfo.setSubnetMask(getSubnetMask(32 - subnetBits));
             subnetInfo.setGateway(intToIp(currentIp + 1));
             subnetInfo.setFirstUsableIp(intToIp(currentIp + 2));
             subnetInfo.setLastUsableIp(intToIp(broadcastAddress - 1));
@@ -48,7 +44,7 @@ public class SubnetCalculatorService {
 
             subnets.add(subnetInfo);
 
-            currentIp += blockSize; // Avanzar a la siguiente subred
+            currentIp += subnetSize; // Avanzar a la siguiente subred
         }
 
         response.setSubnets(subnets);
