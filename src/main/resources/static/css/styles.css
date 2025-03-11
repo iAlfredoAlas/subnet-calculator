@@ -49,57 +49,44 @@ h2 {
     box-shadow: 0 0 5px var(--primary-color);
 }
 
-.btn-primary, .btn-success, .btn-secondary {
-    background-color: var(--primary-color);
-    border: none;
+/* Tabla responsiva */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
 }
 
-.btn-primary:hover, .btn-success:hover, .btn-secondary:hover {
-    background-color: #5c8f92;
+/* Modo tabla normal en pantallas grandes */
+@media screen and (min-width: 769px) {
+    .table thead {
+        display: table-header-group;
+    }
 }
 
-table {
-    background-color: var(--bg-dark);
-    color: var(--text-color);
-}
+/* Modo columna en pantallas pequeñas */
+@media screen and (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
 
-th {
-    background-color: var(--primary-color);
-    color: #222831;
-}
+    .table tbody tr {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--primary-color);
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 8px;
+    }
 
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: #2C323B;
-}
+    .table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+        border-bottom: 1px solid #444;
+    }
 
-.table-striped tbody tr:nth-of-type(even) {
-    background-color: var(--bg-light);
-}
-
-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px; /* Espaciado entre los íconos */
-    padding: 20px;
-    margin-top: 30px;
-}
-
-.social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-}
-
-.social-icon {
-    width: 40px;
-    height: 40px;
-    fill: #EEEEEE; /* Color inicial de los íconos */
-    transition: fill 0.3s ease-in-out, transform 0.2s ease-in-out;
-}
-
-.social-icon:hover {
-    fill: #76ABAE; /* Cambio de color al pasar el mouse */
-    transform: scale(1.1); /* Pequeño zoom al pasar el mouse */
+    .table tbody td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: var(--primary-color);
+    }
 }
