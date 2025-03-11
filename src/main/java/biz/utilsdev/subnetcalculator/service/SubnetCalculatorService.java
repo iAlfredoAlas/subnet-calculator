@@ -13,7 +13,7 @@ public class SubnetCalculatorService {
     public SubnetResponse calculateSubnets(SubnetRequest request) {
         SubnetResponse response = new SubnetResponse();
         response.setIpBase(request.getIpBase());
-        response.setSubnetMask(getSubnetMask(request.getCidr()));
+        response.setSubnetMask(getSubnetMask(request.getCidr())); // Máscara base
         response.setWildcardMask(getWildcardMask(request.getCidr()));
 
         List<SubnetResponse.SubnetInfo> subnets = new ArrayList<>();
@@ -26,9 +26,13 @@ public class SubnetCalculatorService {
                 Integer.parseInt(ipParts[3]);
 
         int currentIp = baseIp;
+
         for (int i = 0; i < request.getNumSubnets(); i++) {
             int requiredHosts = request.getHostRequirements().get(i);
+
+            // Determinar el CIDR adecuado (mínimo que cubra los hosts requeridos)
             int subnetBits = 32 - Integer.numberOfLeadingZeros(requiredHosts + 2); // +2 para red y broadcast
+            int cidr = 32 - subnetBits; // CIDR óptimo
             int subnetSize = (int) Math.pow(2, subnetBits);
 
             int broadcastAddress = currentIp + subnetSize - 1;
@@ -36,7 +40,7 @@ public class SubnetCalculatorService {
             SubnetResponse.SubnetInfo subnetInfo = new SubnetResponse.SubnetInfo();
             subnetInfo.setName("Red " + (i + 1));
             subnetInfo.setNetworkAddress(intToIp(currentIp));
-            subnetInfo.setSubnetMask(getSubnetMask(32 - subnetBits));
+            subnetInfo.setSubnetMask(getSubnetMask(cidr)); // Asigna el CIDR óptimo
             subnetInfo.setGateway(intToIp(currentIp + 1));
             subnetInfo.setFirstUsableIp(intToIp(currentIp + 2));
             subnetInfo.setLastUsableIp(intToIp(broadcastAddress - 1));
