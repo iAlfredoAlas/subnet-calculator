@@ -49,7 +49,7 @@ document.getElementById("subnetForm").addEventListener("submit", function(event)
     }
 
     // 🔹 Enviar petición al backend
-    axios.post("/api/subnet/calculate", {
+    axios.post("/subnet-calculator/api/subnet/calculate", {
         ipBase: ipBase.value,
         cidr: parseInt(cidr.value),
         numSubnets: parseInt(numSubnets.value),
@@ -82,7 +82,7 @@ document.querySelectorAll(".form-control").forEach(input => {
     });
 });
 document.addEventListener("DOMContentLoaded", function () {
-    // 🔹 Copiar JSON al portapapeles
+    // Copiar JSON al portapapeles
     document.getElementById("copyJson").addEventListener("click", function () {
         const tableBody = document.querySelector("#resultsTable tbody");
 
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 
-    // 🔹 Copiar Tabla como texto tabulado
+    // Copiar Tabla como texto tabulado
     document.getElementById("copyTable").addEventListener("click", function () {
         const tableBody = document.querySelector("#resultsTable tbody");
 
